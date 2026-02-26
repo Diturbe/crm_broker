@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Pólizas · CRM Broker</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            color: #212529;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 240px;
+            background: #05386B;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+        }
+        .sidebar h2 {
+            padding: 20px;
+            margin: 0;
+            font-size: 22px;
+            text-align: center;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        .nav-link {
+            padding: 14px 20px;
+            font-size: 15px;
+            display: block;
+            text-decoration: none;
+            color: white;
+            transition: 0.2s;
+        }
+        .nav-link:hover {
+            background: rgba(255,255,255,0.15);
+            border-radius: 8px;
+        }
+        .nav-link.active {
+            background: rgba(255,255,255,0.20);
+            border-radius: 8px;
+            font-weight: bold;
+        }
+        .sidebar-footer {
+            margin-top: auto;
+            padding: 15px 20px;
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        /* CONTENIDO */
+        .content {
+            flex: 1;
+            padding: 25px;
+        }
+        h1 {
+            margin-top: 0;
+            margin-bottom: 5px;
+            color: #05386B;
+        }
+        .subtitle {
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #6c757d;
+            font-size: 13px;
+        }
+
+        .cards-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        @media (max-width: 1024px) {
+            .cards-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+        .card h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 16px;
+            color: #05386B;
+        }
+
+        /* FORMULARIOS */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px 20px;
+        }
+        .form-group {
+            margin-bottom: 8px;
+        }
+        label {
+            display: block;
+            font-size: 12px;
+            margin-bottom: 3px;
+            color: #495057;
+        }
+        input, select {
+            width: 100%;
+            padding: 7px 8px;
+            border-radius: 6px;
+            border: 1px solid #ced4da;
+            font-size: 13px;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #05386B;
+            box-shadow: 0 0 0 2px rgba(5,56,107,0.15);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 7px 14px;
+            border-radius: 4px;
+            border: none;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        .btn-primary { background: #05386B; color: #fff; }
+        .btn-secondary { background: #6c757d; color: #fff; }
+        .btn-xs { padding: 4px 8px; font-size: 11px; }
+
+        /* TABLA */
+        .table-card {
+            margin-top: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+        thead {
+            background: #05386B;
+            color: white;
+        }
+        th, td {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+            text-align: left;
+        }
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        .badge-vigente {
+            background: #d4edda;
+            color: #155724;
+        }
+        .badge-porvencer {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .badge-vencida {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* SITUACIÓN PÓLIZA */
+        .situacion-select {
+            width: 140px;
+            font-size: 11px;
+            padding: 4px 6px;
+        }
+
+        .wa-link, .pdf-link {
+            font-size: 11px;
+            text-decoration: none;
+            margin-right: 6px;
+        }
+        .wa-link { color: #128C7E; }
+        .pdf-link { color: #d9534f; }
+
+        .import-info {
+            font-size: 12px;
+            color: #6c757d;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <h2>CRM Broker</h2>
+
+        <a href="{{ url_for('dashboard') }}" class="nav-link">
+            📊 Dashboard
+        </a>
+        <a href="{{ url_for('ver_polizas') }}" class="nav-link active">
+            📄 Pólizas
+        </a>
+        <a href="{{ url_for('finanzas') }}" class="nav-link">
+            💰 Finanzas
+        </a>
+        <a href="{{ url_for('usuarios') }}" class="nav-link">
+            👥 Usuarios
+        </a>
+        <a href="{{ url_for('siniestros') }}" class="nav-link">
+            🚨 Siniestros
+        </a>
+        <a href="{{ url_for('reporte_form') }}" class="nav-link">
+            📑 Reportes
+        </a>
+
+        <a href="{{ url_for('logout') }}" class="nav-link" style="margin-top:20px; background:#8b2a3a; border-radius:10px;">
+            ⛔ Cerrar sesión
+        </a>
+
+        <div class="sidebar-footer">
+            Sesión activa en CRM Broker
+        </div>
+    </div>
+
+    <!-- CONTENIDO -->
+    <div class="content">
+        <h1>Gestión de Pólizas</h1>
+        <p class="subtitle">Alta manual, importación desde Excel y listado completo de pólizas.</p>
+
+        <!-- FORMULARIO ALTA + IMPORTAR EXCEL -->
+        <div class="cards-row">
+            <!-- Alta manual -->
+            <div class="card form-card">
+                <h3>Nueva póliza</h3>
+                <form action="{{ url_for('agregar_poliza') }}" method="post" enctype="multipart/form-data">
+                    <div class="form-grid">
+                        <!-- Datos cliente -->
+                        <div class="form-group">
+                            <label>Nombre</label>
+                            <input type="text" name="nombre" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Apellido</label>
+                            <input type="text" name="apellido" required>
+                        </div>
+                        <div class="form-group">
+                            <label>DNI</label>
+                            <input type="text" name="dni">
+                        </div>
+                        <div class="form-group">
+                            <label>Domicilio</label>
+                            <input type="text" name="domicilio">
+                        </div>
+                        <div class="form-group">
+                            <label>Localidad</label>
+                            <input type="text" name="localidad">
+                        </div>
+                        <div class="form-group">
+                            <label>Provincia</label>
+                            <input type="text" name="provincia">
+                        </div>
+                        <div class="form-group">
+                            <label>Productor interno</label>
+                            <input type="text" name="productor_interno">
+                        </div>
+                        <div class="form-group">
+                            <label>Teléfono</label>
+                            <input type="text" name="telefono">
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" name="email">
+                        </div>
+                        <div class="form-group">
+                            <label>Fecha de nacimiento</label>
+                            <input type="date" name="fecha_nacimiento">
+                        </div>
+
+                        <!-- Datos póliza -->
+                        <div class="form-group">
+                            <label>Compañía</label>
+                            <input type="text" name="compania" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Tipo de seguro</label>
+                            <input type="text" name="tipo_seguro">
+                        </div>
+                        <div class="form-group">
+                            <label>N° póliza</label>
+                            <input type="text" name="numero_poliza" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Fecha de vencimiento</label>
+                            <input type="date" name="fecha_vencimiento" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Prima</label>
+                            <input type="number" step="0.01" name="prima" required>
+                        </div>
+                        <div class="form-group">
+                            <label>% Comisión</label>
+                            <input type="number" step="0.01" name="porcentaje" required>
+                        </div>
+                        <div class="form-group">
+                            <label>PDF de póliza (opcional)</label>
+                            <input type="file" name="archivo_pdf" accept="application/pdf">
+                        </div>
+                    </div>
+                    <br>
+                    <button class="btn btn-primary">Guardar póliza</button>
+                </form>
+            </div>
+
+            <!-- Importar Excel -->
+            <div class="card">
+                <h3>Importar pólizas desde Excel</h3>
+                <p class="import-info">
+                    Usá el modelo de Excel que armamos (mismas columnas que el sistema) y cargá varias pólizas en un solo paso.
+                </p>
+                <form action="{{ url_for('importar_polizas') }}" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label>Archivo Excel (.xls / .xlsx)</label>
+                        <input type="file" name="archivo_excel" accept=".xls,.xlsx" required>
+                    </div>
+                    <br>
+                    <button class="btn btn-secondary">Importar pólizas</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- LISTADO DE PÓLIZAS -->
+        <div class="card table-card">
+            <h3>Listado de pólizas</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Cliente</th>
+                        <th>DNI</th>
+                        <th>Localidad</th>
+                        <th>Provincia</th>
+                        <th>Productor</th>
+                        <th>Compañía</th>
+                        <th>Tipo seguro</th>
+                        <th>N° póliza</th>
+                        <th>Vence</th>
+                        <th>Estado (vencimiento)</th>
+                        <th>Situación</th>
+                        <th>Prima</th>
+                        <th>% Com.</th>
+                        <th>Comisión</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for p in polizas %}
+                    <tr>
+                        <td>{{ p.cliente }}</td>
+                        <td>{{ p.dni or '-' }}</td>
+                        <td>{{ p.localidad or '-' }}</td>
+                        <td>{{ p.provincia or '-' }}</td>
+                        <td>{{ p.productor_interno or '-' }}</td>
+                        <td>{{ p.compania }}</td>
+                        <td>{{ p.tipo_seguro or '-' }}</td>
+                        <td>{{ p.numero_poliza }}</td>
+                        <td>{{ p.fecha_vencimiento.strftime('%d/%m/%Y') }}</td>
+                        <td>
+                            {% if p.estado == 'VIGENTE' %}
+                                <span class="badge badge-vigente">Vigente</span>
+                            {% elif p.estado == 'POR VENCER' %}
+                                <span class="badge badge-porvencer">Por vencer</span>
+                            {% else %}
+                                <span class="badge badge-vencida">Vencida</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <form action="{{ url_for('cambiar_situacion_poliza', id=p.id) }}" method="post">
+                                <select name="situacion" class="situacion-select" onchange="this.form.submit()">
+                                    <option value="ACTIVA"   {% if p.situacion == 'ACTIVA'   %}selected{% endif %}>Activa</option>
+                                    <option value="CANCELADA"{% if p.situacion == 'CANCELADA'%}selected{% endif %}>Cancelada</option>
+                                    <option value="BAJA"     {% if p.situacion == 'BAJA'     %}selected{% endif %}>Dada de baja</option>
+                                    <option value="ANULADA"  {% if p.situacion == 'ANULADA'  %}selected{% endif %}>Anulada</option>
+                                </select>
+                            </form>
+                        </td>
+                        <td>$ {{ '%.2f'|format(p.prima) }}</td>
+                        <td>{{ p.porcentaje }} %</td>
+                        <td>$ {{ '%.2f'|format(p.comision) }}</td>
+                        <td>
+                            {% if p.wa_link %}
+                                <a href="{{ p.wa_link }}" target="_blank" class="wa-link">WhatsApp</a>
+                            {% endif %}
+                            {% if p.archivo_pdf %}
+                                <a href="{{ url_for('poliza_pdf', id=p.id) }}" target="_blank" class="pdf-link">Ver PDF</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="15">Todavía no hay pólizas cargadas.</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

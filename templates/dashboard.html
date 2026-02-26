@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard · CRM Broker</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            color: #212529;
+        }
+
+        /* ===== SIDEBAR LATERAL ===== */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 230px;
+            height: 100vh;
+            background: #0c3c78;
+            color: white;
+            padding: 25px 20px;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.25);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .sidebar nav {
+            flex: 1;
+        }
+
+        .sidebar nav a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 10px 10px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            font-size: 15px;
+            transition: 0.2s;
+        }
+
+        .sidebar nav a:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .sidebar nav .logout {
+            margin-top: 20px;
+            background: rgba(255, 0, 0, 0.35);
+        }
+
+        .sidebar nav .logout:hover {
+            background: rgba(255, 0, 0, 0.55);
+        }
+
+        /* ===== CONTENIDO PRINCIPAL ===== */
+        .container {
+            padding: 25px 30px 40px 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+            margin-left: 260px; /* espacio para el sidebar */
+        }
+
+        h1 {
+            margin-top: 10px;
+            margin-bottom: 5px;
+            color: #0c3c78;
+        }
+
+        .subtitle {
+            margin-top: 0;
+            margin-bottom: 25px;
+            color: #6c757d;
+            font-size: 13px;
+        }
+
+        .cards {
+            display:flex;
+            gap:20px;
+            margin-top:10px;
+            flex-wrap:wrap;
+        }
+
+        .card {
+            flex:1;
+            min-width:180px;
+            padding:18px;
+            border-radius:10px;
+            color:white;
+            text-align:center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .total { background:#0c3c78; }
+        .vigente { background:#28a745; }
+        .porvencer { background:#ffc107; color:#212529; }
+        .vencida { background:#dc3545; }
+        .comisiones { background:#6f42c1; }
+        .ingresos { background:#17a2b8; }
+        .egresos { background:#6c757d; }
+        .saldo { background:#343a40; }
+
+        .card-label {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+        .card-value {
+            margin-top: 8px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .links {
+            margin-top: 25px;
+        }
+        .links a {
+            display:inline-block;
+            margin-top:8px;
+            margin-right:10px;
+            text-decoration:none;
+            padding:8px 15px;
+            border-radius: 999px;
+            background:#0c3c78;
+            color:white;
+            font-size: 13px;
+        }
+        .links a:hover {
+            background:#0a315f;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 2fr) minmax(0, 1.5fr);
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .chart-container,
+        .box {
+            background:white;
+            padding:20px;
+            border-radius:10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        }
+        .chart-container h2,
+        .box h2 {
+            margin-top:0;
+            font-size:16px;
+            color:#0c3c78;
+        }
+        .small {
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 900px) {
+            .sidebar {
+                width: 200px;
+            }
+            .container {
+                margin-left: 220px;
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .sidebar {
+                position: static;
+                width: 100%;
+                height: auto;
+                flex-direction: row;
+                align-items: center;
+                padding: 10px 15px;
+            }
+            .sidebar-title {
+                margin-bottom: 0;
+                margin-right: 15px;
+                text-align: left;
+            }
+            .sidebar nav {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 6px;
+            }
+            .sidebar nav a {
+                margin-bottom: 0;
+                padding: 6px 10px;
+                font-size: 13px;
+            }
+            .sidebar nav .logout {
+                margin-top: 0;
+            }
+            .container {
+                margin-left: 0;
+                padding: 20px 15px 30px 15px;
+            }
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- MENÚ LATERAL -->
+<div class="sidebar">
+    <div class="sidebar-title">CRM Broker</div>
+    <nav>
+        <a href="{{ url_for('dashboard') }}">📊 Dashboard</a>
+        <a href="/polizas">📄 Pólizas</a>
+        <a href="/finanzas">💰 Finanzas</a>
+        <a href="/usuarios">👥 Usuarios</a>
+        <a href="/reporte_form">📑 Reportes</a>
+        <a href="{{ url_for('siniestros') }}" class="nav-link">🚨 Siniestros</a>
+        <a href="/logout" class="logout">⛔ Cerrar sesión</a>
+    </nav>
+</div>
+
+<!-- CONTENIDO PRINCIPAL -->
+<div class="container">
+    <h1>Dashboard general</h1>
+    <p class="subtitle">Resumen de pólizas, comisiones y situación financiera del broker.</p>
+
+    <!-- Pólizas -->
+    <div class="cards">
+        <div class="card total">
+            <div class="card-label">Total de pólizas</div>
+            <div class="card-value">{{ total }}</div>
+        </div>
+
+        <div class="card vigente">
+            <div class="card-label">Vigentes</div>
+            <div class="card-value">{{ vigentes }}</div>
+        </div>
+
+        <div class="card porvencer">
+            <div class="card-label">Por vencer (≤30 días)</div>
+            <div class="card-value">{{ por_vencer }}</div>
+        </div>
+
+        <div class="card vencida">
+            <div class="card-label">Vencidas</div>
+            <div class="card-value">{{ vencidas }}</div>
+        </div>
+
+        <div class="card comisiones">
+            <div class="card-label">Total comisiones</div>
+            <div class="card-value">$ {{ total_comisiones }}</div>
+        </div>
+    </div>
+
+    <!-- Finanzas -->
+    <div class="cards" style="margin-top:25px;">
+        <div class="card ingresos">
+            <div class="card-label">Ingresos totales</div>
+            <div class="card-value">$ {{ total_ingresos }}</div>
+        </div>
+        <div class="card egresos">
+            <div class="card-label">Egresos totales</div>
+            <div class="card-value">$ {{ total_egresos }}</div>
+        </div>
+        <div class="card saldo">
+            <div class="card-label">Saldo neto</div>
+            <div class="card-value">$ {{ saldo }}</div>
+        </div>
+    </div>
+
+    <div class="links">
+        <a href="/polizas">Gestión de pólizas</a>
+        <a href="/usuarios">Gestión de usuarios</a>
+        <a href="/finanzas">Módulo financiero</a>
+        <a href="/reporte_form">Reporte mensual (PDF)</a>
+    </div>
+
+    <div class="content-grid">
+        <div class="chart-container">
+            <h2>Distribución de pólizas por estado</h2>
+            <p class="small">Visualizá la proporción de pólizas vigentes, por vencer y vencidas.</p>
+            <canvas id="estadoChart"></canvas>
+        </div>
+
+        <div class="box">
+            <h2>Notas rápidas</h2>
+            <p class="small">
+                Podés usar este panel como indicador rápido:
+            </p>
+            <ul class="small">
+                <li>Revisar pólizas por vencer para no perder renovaciones.</li>
+                <li>Controlar que las comisiones cobradas coincidan con la producción real.</li>
+                <li>Chequear mensualmente que el saldo neto cubra gastos fijos del estudio.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    const ctx = document.getElementById('estadoChart').getContext('2d');
+
+    const estadoChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Vigentes', 'Por vencer', 'Vencidas'],
+            datasets: [{
+                data: [{{ vigentes }}, {{ por_vencer }}, {{ vencidas }}],
+                backgroundColor: [
+                    '#28a745',
+                    '#ffc107',
+                    '#dc3545'
+                ]
+            }]
+        },
+        options: {
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.label || '';
+                            let value = context.raw || 0;
+                            return `${label}: ${value} pólizas`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

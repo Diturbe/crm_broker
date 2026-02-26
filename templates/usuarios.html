@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Usuarios - CRM Broker</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 240px;
+            background: #05386B;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar h2 {
+            padding: 20px;
+            margin: 0;
+            font-size: 22px;
+            text-align: center;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .nav-link {
+            padding: 14px 20px;
+            font-size: 15px;
+            display: block;
+            text-decoration: none;
+            color: white;
+            transition: 0.2s;
+        }
+
+        .nav-link:hover {
+            background: rgba(255,255,255,0.15);
+            border-radius: 8px;
+        }
+
+        .nav-link.active {
+            background: rgba(255,255,255,0.20);
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding: 15px 20px;
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        /* CONTENIDO */
+        .content {
+            flex: 1;
+            padding: 25px;
+        }
+
+        h1 {
+            margin-top: 0;
+            color: #05386B;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        /* GRID DEL FORM */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 15px 20px;
+        }
+
+        .form-grid div {
+            display: flex;
+            flex-direction: column;
+        }
+
+        input, select {
+            padding: 7px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            font-size: 13px;
+        }
+
+        input[type="file"] {
+            width: 100%;
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background: #fff;
+        }
+
+        label {
+            font-size: 13px;
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+
+        .btn {
+            padding: 8px 14px;
+            border: none;
+            border-radius: 4px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .btn-primary { background: #05386B; color: white; }
+        .btn-warning { background: #ffc107; }
+        .btn-danger { background: #dc3545; color: white; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-secondary { background: #6c757d; color: white; }
+        .btn-xs { padding: 4px 6px; font-size: 11px; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        thead {
+            background: #05386B;
+            color: white;
+        }
+
+        th, td {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+            text-align: left;
+        }
+
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .activo { background: #d4edda; color: #155724; }
+        .pendiente { background: #fff3cd; color: #856404; }
+        .bloqueado { background: #f8d7da; color: #721c24; }
+
+        .acciones form {
+            display: inline;
+        }
+    </style>
+
+    <script>
+        function confirmar(msg) {
+            return confirm(msg);
+        }
+    </script>
+</head>
+<body>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+   <div class="sidebar">
+    <h2>CRM Broker</h2>
+
+    <a href="{{ url_for('dashboard') }}" class="nav-link">📊 Dashboard</a>
+
+    <a href="{{ url_for('ver_polizas') }}" class="nav-link">📄 Pólizas</a>
+
+    <a href="{{ url_for('finanzas') }}" class="nav-link">💰 Finanzas</a>
+
+    <a href="{{ url_for('usuarios') }}" class="nav-link">👥 Usuarios</a>
+
+    <a href="{{ url_for('reporte_form') }}" class="nav-link">📑 Reportes</a>
+
+    <!-- 🔥 NUEVO MÓDULO AGREGADO -->
+    <a href="{{ url_for('siniestros') }}" class="nav-link">🚨 Siniestros</a>
+    <!-- 🔥 -->
+
+    <a href="{{ url_for('logout') }}"
+       class="nav-link"
+       style="margin-top:20px; background:#8b2a3a; border-radius:10px;">
+        ⛔ Cerrar sesión
+    </a>
+
+    <div class="sidebar-footer">
+        Sesión activa en CRM Broker
+    </div>
+</div>
+
+    <!-- CONTENIDO -->
+    <div class="content">
+        <h1>Gestión de Usuarios</h1>
+
+        <!-- FORMULARIO -->
+        <div class="card">
+            <h3>Nuevo Usuario</h3>
+
+            <form action="{{ url_for('crear_usuario') }}" method="post" enctype="multipart/form-data">
+                <div class="form-grid">
+
+                    <div>
+                        <label>Nombre</label>
+                        <input type="text" name="nombre" required>
+                    </div>
+
+                    <div>
+                        <label>Apellido</label>
+                        <input type="text" name="apellido" required>
+                    </div>
+
+                    <div>
+                        <label>DNI</label>
+                        <input type="text" name="dni">
+                    </div>
+
+                    <div>
+                        <label>CUIT</label>
+                        <input type="text" name="cuit">
+                    </div>
+
+                    <div>
+                        <label>Fecha de nacimiento</label>
+                        <input type="date" name="fecha_nacimiento">
+                    </div>
+
+                    <div>
+                        <label>Mail *</label>
+                        <input type="email" name="email" required>
+                    </div>
+
+                    <div>
+                        <label>Rol</label>
+                        <select name="rol">
+                            <option value="usuario">Usuario</option>
+                            <option value="supervisor">Supervisor</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label>¿Es productor?</label>
+                        <select name="es_productor">
+                            <option value="0">No</option>
+                            <option value="1">Sí</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label>¿Es vendedor?</label>
+                        <select name="es_vendedor">
+                            <option value="0">No</option>
+                            <option value="1">Sí</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label>Matrícula productor</label>
+                        <input type="text" name="matricula">
+                    </div>
+
+                    <div>
+                        <label>Subir CUIT (PDF)</label>
+                        <input type="file" name="archivo_cuit" accept="application/pdf">
+                    </div>
+
+                    <div>
+                        <label>Subir Matrícula (PDF)</label>
+                        <input type="file" name="archivo_matricula" accept="application/pdf">
+                    </div>
+
+                    <div>
+                        <label>Subir DNI (PDF)</label>
+                        <input type="file" name="archivo_dni_doc" accept="application/pdf">
+                    </div>
+
+                </div>
+
+                <br>
+                <button class="btn btn-primary">
+                    Enviar mail y crear usuario
+                </button>
+            </form>
+        </div>
+
+        <!-- TABLA -->
+        <div class="card">
+            <h3>Listado de usuarios</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>DNI</th>
+                        <th>CUIT</th>
+                        <th>Mail</th>
+                        <th>Rol</th>
+                        <th>Estado</th>
+                        <th>Docs</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for u in usuarios %}
+                    <tr>
+                        <td>{{ u.apellido }}, {{ u.nombre }}</td>
+                        <td>{{ u.dni or '-' }}</td>
+                        <td>{{ u.cuit or '-' }}</td>
+                        <td>{{ u.email }}</td>
+                        <td>{{ u.rol }}</td>
+
+                        <td>
+                            {% if u.token_registro %}
+                                <span class="badge pendiente">Pendiente</span>
+                            {% elif u.activo %}
+                                <span class="badge activo">Activo</span>
+                            {% else %}
+                                <span class="badge bloqueado">Bloqueado</span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            -
+                        </td>
+
+                        <td class="acciones">
+                            {% if not u.token_registro %}
+                            <form action="{{ url_for('usuarios_bloquear', id=u.id) }}" method="post"
+                                  onsubmit="return confirmar('¿Cambiar estado?')">
+                                <button class="btn {% if u.activo %}btn-danger{% else %}btn-success{% endif %} btn-xs">
+                                    {% if u.activo %}🚫{% else %}✅{% endif %}
+                                </button>
+                            </form>
+                            {% endif %}
+                        </td>
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

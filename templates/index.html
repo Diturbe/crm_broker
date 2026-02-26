@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>CRM Broker - Inicio</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #0c3c78, #0f6bb3);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 18px;
+            padding: 40px 50px;
+            max-width: 900px;
+            width: 95%;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(6px);
+        }
+        h1 {
+            margin-top: 0;
+            font-size: 32px;
+            letter-spacing: 1px;
+        }
+        h2 {
+            margin-top: 5px;
+            font-weight: normal;
+            color: #e0e7ff;
+        }
+        .grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .feature {
+            flex: 1;
+            min-width: 220px;
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 14px;
+            padding: 15px 18px;
+        }
+        .feature h3 {
+            margin-top: 0;
+            font-size: 16px;
+        }
+        .feature p {
+            font-size: 13px;
+            line-height: 1.4;
+            color: #dbe4ff;
+        }
+        .buttons {
+            margin-top: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        a.btn {
+            text-decoration: none;
+            padding: 12px 22px;
+            border-radius: 999px;
+            font-weight: bold;
+            font-size: 14px;
+            border: 1px solid #ffffff;
+            transition: all 0.2s ease;
+            display: inline-block;
+        }
+        a.btn-primary {
+            background: #ffffff;
+            color: #0c3c78;
+            border-color: #ffffff;
+        }
+        a.btn-primary:hover {
+            background: #e6f0ff;
+        }
+        a.btn-outline {
+            background: transparent;
+            color: #ffffff;
+        }
+        a.btn-outline:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        .badge {
+            display: inline-block;
+            border-radius: 999px;
+            padding: 4px 10px;
+            font-size: 11px;
+            background: rgba(0, 0, 0, 0.25);
+            margin-bottom: 10px;
+        }
+        .footer {
+            margin-top: 25px;
+            font-size: 11px;
+            color: #cdd4ff;
+            opacity: 0.8;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px 20px;
+            }
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <span class="badge">Panel interno · CRM para Broker de Seguros</span>
+    <h1>CRM Broker</h1>
+    <h2>Organizá pólizas, comisiones y finanzas en un solo lugar.</h2>
+
+    <div class="grid">
+        <div class="feature">
+            <h3>📊 Vista general en segundos</h3>
+            <p>Dashboard con pólizas vigentes, por vencer y vencidas, más el resumen de comisiones y saldos.</p>
+        </div>
+        <div class="feature">
+            <h3>📅 Gestión de pólizas</h3>
+            <p>Control de pólizas por compañía y cliente, con cálculo automático de comisiones y aviso por WhatsApp.</p>
+        </div>
+        <div class="feature">
+            <h3>💰 Módulo financiero</h3>
+            <p>Registrá ingresos y egresos, analizá la rentabilidad del broker y generá reportes mensuales en PDF.</p>
+        </div>
+    </div>
+
+    <div class="buttons">
+        <a href="{{ url_for('login') }}" class="btn btn-primary">Ingresar al CRM</a>
+        <a href="{{ url_for('login') }}" class="btn btn-outline">Sólo necesito el login</a>
+    </div>
+
+    <div class="footer">
+        CRM Broker · Uso interno
+    </div>
+</div>
+
+</body>
+</html>

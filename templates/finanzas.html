@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Finanzas · CRM Broker</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin:0;
+            font-family:Arial,sans-serif;
+            background:#f4f6f9;
+            color:#212529;
+        }
+
+        .sidebar {
+            position:fixed;
+            left:0;
+            top:0;
+            width:230px;
+            height:100vh;
+            background:#0c3c78;
+            color:white;
+            padding:25px 20px;
+            box-shadow:2px 0 10px rgba(0,0,0,0.25);
+            display:flex;
+            flex-direction:column;
+        }
+        .sidebar-title {
+            font-size:20px;
+            font-weight:bold;
+            margin-bottom:30px;
+            text-align:center;
+        }
+        .sidebar nav { flex:1; }
+        .sidebar nav a {
+            display:block;
+            color:white;
+            text-decoration:none;
+            padding:10px 10px;
+            border-radius:6px;
+            margin-bottom:8px;
+            font-size:15px;
+            transition:0.2s;
+        }
+        .sidebar nav a:hover { background:rgba(255,255,255,0.2); }
+        .sidebar nav .logout {
+            margin-top:20px;
+            background:rgba(255,0,0,0.35);
+        }
+        .sidebar nav .logout:hover { background:rgba(255,0,0,0.55); }
+
+        .container {
+            padding:25px 30px 40px 30px;
+            max-width:1150px;
+            margin:0 auto;
+            margin-left:260px;
+        }
+        h1 {
+            margin-top:10px;
+            margin-bottom:5px;
+            color:#0c3c78;
+        }
+        .subtitle {
+            margin-top:0;
+            margin-bottom:20px;
+            color:#6c757d;
+            font-size:13px;
+        }
+
+        .summary-cards {
+            display:flex;
+            flex-wrap:wrap;
+            gap:20px;
+            margin-bottom:25px;
+        }
+        .summary-card {
+            flex:1;
+            min-width:180px;
+            background:white;
+            border-radius:10px;
+            padding:14px 16px;
+            box-shadow:0 4px 12px rgba(0,0,0,0.06);
+        }
+        .summary-label {
+            font-size:12px;
+            color:#6c757d;
+        }
+        .summary-value {
+            font-size:20px;
+            font-weight:bold;
+            margin-top:6px;
+        }
+        .ingreso { border-left:4px solid #28a745; }
+        .egreso { border-left:4px solid #dc3545; }
+        .saldo  { border-left:4px solid #0c3c78; }
+
+        .card {
+            background:white;
+            border-radius:10px;
+            padding:18px 20px;
+            box-shadow:0 4px 12px rgba(0,0,0,0.06);
+            margin-bottom:25px;
+        }
+
+        .form-row {
+            display:flex;
+            flex-wrap:wrap;
+            gap:15px;
+            margin-bottom:10px;
+        }
+        .form-group {
+            flex:1;
+            min-width:160px;
+        }
+        label {
+            display:block;
+            font-size:12px;
+            margin-bottom:4px;
+            color:#495057;
+        }
+        input, select {
+            width:100%;
+            padding:7px 8px;
+            border-radius:6px;
+            border:1px solid #ced4da;
+            font-size:13px;
+        }
+        input:focus, select:focus {
+            outline:none;
+            border-color:#0c3c78;
+            box-shadow:0 0 0 2px rgba(12,60,120,0.12);
+        }
+        button {
+            padding:8px 18px;
+            border-radius:999px;
+            border:none;
+            background:#0c3c78;
+            color:#ffffff;
+            font-size:13px;
+            font-weight:bold;
+            cursor:pointer;
+            margin-top:8px;
+        }
+        button:hover { background:#0a315f; }
+
+        .filter-info {
+            font-size:12px;
+            color:#6c757d;
+            margin-bottom:8px;
+        }
+
+        table {
+            width:100%;
+            border-collapse:collapse;
+            font-size:13px;
+        }
+        thead {
+            background:#0c3c78;
+            color:white;
+        }
+        th, td {
+            padding:8px 6px;
+            border-bottom:1px solid #e1e5ea;
+            text-align:left;
+        }
+        tbody tr:nth-child(even) { background:#f8f9fb; }
+        .tipo-ingreso { color:#28a745; font-weight:bold; }
+        .tipo-egreso { color:#dc3545; font-weight:bold; }
+
+        @media (max-width: 900px) {
+            .sidebar { width:200px; }
+            .container { margin-left:220px; padding:20px; }
+        }
+        @media (max-width: 700px) {
+            .sidebar {
+                position:static;
+                width:100%;
+                height:auto;
+                flex-direction:row;
+                align-items:center;
+                padding:10px 15px;
+            }
+            .sidebar-title {
+                margin-bottom:0;
+                margin-right:15px;
+                text-align:left;
+            }
+            .sidebar nav {
+                display:flex;
+                flex-wrap:wrap;
+                gap:6px;
+            }
+            .sidebar nav a {
+                margin-bottom:0;
+                padding:6px 10px;
+                font-size:13px;
+            }
+            .sidebar nav .logout { margin-top:0; }
+            .container {
+                margin-left:0;
+                padding:20px 15px 30px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <div class="sidebar-title">CRM Broker</div>
+    <nav>
+        <a href="{{ url_for('dashboard') }}">📊 Dashboard</a>
+        <a href="/polizas">📄 Pólizas</a>
+        <a href="/finanzas">💰 Finanzas</a>
+        <a href="/usuarios">👥 Usuarios</a>
+        <a href="/reporte_form">📑 Reportes</a>
+        <a href="{{ url_for('siniestros') }}" class="nav-link">🚨 Siniestros</a>
+        <a href="/logout" class="logout">⛔ Cerrar sesión</a>
+    </nav>
+</div>
+
+<div class="container">
+    <h1>Finanzas</h1>
+    <p class="subtitle">Registro de ingresos y egresos del broker.</p>
+
+    <div class="summary-cards">
+        <div class="summary-card ingreso">
+            <div class="summary-label">Ingresos del mes</div>
+            <div class="summary-value">$ {{ total_ingresos }}</div>
+        </div>
+        <div class="summary-card egreso">
+            <div class="summary-label">Egresos del mes</div>
+            <div class="summary-value">$ {{ total_egresos }}</div>
+        </div>
+        <div class="summary-card saldo">
+            <div class="summary-label">Saldo neto</div>
+            <div class="summary-value">$ {{ saldo }}</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Agregar movimiento</h3>
+        <form method="POST" action="/finanzas_agregar">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="fecha">Fecha</label>
+                    <input type="date" id="fecha" name="fecha" required>
+                </div>
+                <div class="form-group">
+                    <label for="tipo">Tipo</label>
+                    <select id="tipo" name="tipo" required>
+                        <option value="ingreso">Ingreso</option>
+                        <option value="egreso">Egreso</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="categoria">Categoría</label>
+                    <input type="text" id="categoria" name="categoria" placeholder="Comisión, alquiler, servicios..." required>
+                </div>
+                <div class="form-group">
+                    <label for="monto">Monto ($)</label>
+                    <input type="number" step="0.01" id="monto" name="monto" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="compania">Compañía (opcional)</label>
+                    <input type="text" id="compania" name="compania" placeholder="ATM, RUS, etc.">
+                </div>
+                <div class="form-group">
+                    <label for="cliente">Cliente (opcional)</label>
+                    <input type="text" id="cliente" name="cliente">
+                </div>
+                <div class="form-group">
+                    <label for="numero_poliza">N° póliza (opcional)</label>
+                    <input type="text" id="numero_poliza" name="numero_poliza">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group" style="flex:1;">
+                    <label for="descripcion">Descripción</label>
+                    <input type="text" id="descripcion" name="descripcion" placeholder="Detalle breve del movimiento">
+                </div>
+            </div>
+
+            <button type="submit">Guardar movimiento</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h3>Movimientos del mes</h3>
+        <p class="filter-info">Mostrando movimientos de {{ mes }}/{{ anio }}.</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Tipo</th>
+                    <th>Categoría</th>
+                    <th>Descripción</th>
+                    <th>Compañía</th>
+                    <th>Cliente</th>
+                    <th>N° póliza</th>
+                    <th>Monto</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for m in movimientos %}
+                <tr>
+                    <td>{{ m.fecha }}</td>
+                    <td>
+                        {% if m.tipo == 'ingreso' %}
+                            <span class="tipo-ingreso">Ingreso</span>
+                        {% else %}
+                            <span class="tipo-egreso">Egreso</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ m.categoria }}</td>
+                    <td>{{ m.descripcion or '' }}</td>
+                    <td>{{ m.compania or '' }}</td>
+                    <td>{{ m.cliente or '' }}</td>
+                    <td>{{ m.numero_poliza or '' }}</td>
+                    <td>$ {{ '%.2f'|format(m.monto) }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="8">No hay movimientos registrados para este mes.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>

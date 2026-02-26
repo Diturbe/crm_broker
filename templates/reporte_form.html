@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Reporte mensual · CRM Broker</title>
+    <style>
+        * { box-sizing:border-box; }
+        body {
+            margin:0;
+            font-family:Arial,sans-serif;
+            background:#f4f6f9;
+            color:#212529;
+        }
+
+        .sidebar {
+            position:fixed;
+            left:0;
+            top:0;
+            width:230px;
+            height:100vh;
+            background:#0c3c78;
+            color:white;
+            padding:25px 20px;
+            box-shadow:2px 0 10px rgba(0,0,0,0.25);
+            display:flex;
+            flex-direction:column;
+        }
+        .sidebar-title {
+            font-size:20px;
+            font-weight:bold;
+            margin-bottom:30px;
+            text-align:center;
+        }
+        .sidebar nav { flex:1; }
+        .sidebar nav a {
+            display:block;
+            color:white;
+            text-decoration:none;
+            padding:10px 10px;
+            border-radius:6px;
+            margin-bottom:8px;
+            font-size:15px;
+            transition:0.2s;
+        }
+        .sidebar nav a:hover { background:rgba(255,255,255,0.2); }
+        .sidebar nav .logout {
+            margin-top:20px;
+            background:rgba(255,0,0,0.35);
+        }
+        .sidebar nav .logout:hover { background:rgba(255,0,0,0.55); }
+
+        .container {
+            padding:25px 30px 40px 30px;
+            max-width:700px;
+            margin:0 auto;
+            margin-left:260px;
+        }
+        h1 {
+            margin-top:10px;
+            margin-bottom:5px;
+            color:#0c3c78;
+        }
+        .subtitle {
+            margin-top:0;
+            margin-bottom:20px;
+            color:#6c757d;
+            font-size:13px;
+        }
+
+        .card {
+            background:#ffffff;
+            border-radius:10px;
+            padding:18px 20px;
+            box-shadow:0 4px 12px rgba(0,0,0,0.06);
+        }
+
+        label {
+            display:block;
+            font-size:12px;
+            margin-bottom:4px;
+            color:#495057;
+        }
+        input, select {
+            width:100%;
+            padding:7px 8px;
+            border-radius:6px;
+            border:1px solid #ced4da;
+            font-size:13px;
+        }
+        input:focus, select:focus {
+            outline:none;
+            border-color:#0c3c78;
+            box-shadow:0 0 0 2px rgba(12,60,120,0.12);
+        }
+        .form-row {
+            display:flex;
+            gap:15px;
+            flex-wrap:wrap;
+            margin-bottom:15px;
+        }
+        .form-group {
+            flex:1;
+            min-width:150px;
+        }
+        button {
+            padding:8px 18px;
+            border-radius:999px;
+            border:none;
+            background:#0c3c78;
+            color:#ffffff;
+            font-size:13px;
+            font-weight:bold;
+            cursor:pointer;
+            margin-top:5px;
+        }
+        button:hover { background:#0a315f; }
+
+        @media (max-width: 900px) {
+            .sidebar { width:200px; }
+            .container { margin-left:220px; padding:20px; }
+        }
+        @media (max-width: 700px) {
+            .sidebar {
+                position:static;
+                width:100%;
+                height:auto;
+                flex-direction:row;
+                align-items:center;
+                padding:10px 15px;
+            }
+            .sidebar-title {
+                margin-bottom:0;
+                margin-right:15px;
+                text-align:left;
+            }
+            .sidebar nav {
+                display:flex;
+                flex-wrap:wrap;
+                gap:6px;
+            }
+            .sidebar nav a {
+                margin-bottom:0;
+                padding:6px 10px;
+                font-size:13px;
+            }
+            .sidebar nav .logout { margin-top:0; }
+            .container {
+                margin-left:0;
+                padding:20px 15px 30px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <div class="sidebar-title">CRM Broker</div>
+    <nav>
+        <a href="{{ url_for('dashboard') }}">📊 Dashboard</a>
+        <a href="/polizas">📄 Pólizas</a>
+        <a href="/finanzas">💰 Finanzas</a>
+        <a href="/usuarios">👥 Usuarios</a>
+        <a href="/reporte_form">📑 Reportes</a>
+        <a href="/logout" class="logout">⛔ Cerrar sesión</a>
+    </nav>
+</div>
+
+<div class="container">
+    <h1>Reporte mensual</h1>
+    <p class="subtitle">Generá un reporte PDF con el resumen de pólizas del mes elegido.</p>
+
+    <div class="card">
+        <form method="GET" action="/reporte_mensual">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="mes">Mes</label>
+                    <select id="mes" name="mes" required>
+                        {% for m in range(1,13) %}
+                            <option value="{{ m }}" {% if m == mes_actual %}selected{% endif %}>
+                                {{ "%02d"|format(m) }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="anio">Año</label>
+                    <input type="number" id="anio" name="anio" value="{{ anio_actual }}" required>
+                </div>
+            </div>
+            <button type="submit">Generar reporte PDF</button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

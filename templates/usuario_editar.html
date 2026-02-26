@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar usuario - CRM Grupo Luma</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f5f7fa;
+        }
+        .card {
+            border-radius: 0.75rem;
+        }
+    </style>
+</head>
+<body>
+<div class="container py-4">
+    <div class="mb-3 d-flex justify-content-between align-items-center">
+        <h3 class="mb-0">Editar usuario #{{ usuario.id }}</h3>
+        <a href="{{ url_for('usuarios') }}" class="btn btn-outline-secondary">Volver al listado</a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                <div class="row g-3">
+                    <!-- Datos personales -->
+                    <div class="col-md-3">
+                        <label class="form-label">Nombre</label>
+                        <input type="text" name="nombre" class="form-control" value="{{ usuario.nombre or '' }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Apellido</label>
+                        <input type="text" name="apellido" class="form-control" value="{{ usuario.apellido or '' }}">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">DNI</label>
+                        <input type="text" name="dni" class="form-control" value="{{ usuario.dni or '' }}">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Fecha de nacimiento</label>
+                        <input type="date" name="fecha_nacimiento" class="form-control"
+                               value="{% if usuario.fecha_nacimiento %}{{ usuario.fecha_nacimiento.strftime('%Y-%m-%d') }}{% endif %}">
+                    </div>
+
+                    <!-- Productor / matrícula / CUIT -->
+                    <div class="col-md-2 d-flex align-items-end">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="1" id="es_productor" name="es_productor"
+                                   {% if usuario.es_productor %}checked{% endif %}>
+                            <label class="form-check-label" for="es_productor">
+                                Es productor
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Matrícula</label>
+                        <input type="text" name="matricula" class="form-control" value="{{ usuario.matricula or '' }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">CUIT</label>
+                        <input type="text" name="cuit" class="form-control" value="{{ usuario.cuit or '' }}">
+                    </div>
+
+                    <!-- Rol y permisos -->
+                    <div class="col-md-3">
+                        <label class="form-label">Rol</label>
+                        <select name="rol" class="form-select">
+                            <option value="usuario" {% if usuario.rol == 'usuario' %}selected{% endif %}>Usuario</option>
+                            <option value="supervisor" {% if usuario.rol == 'supervisor' %}selected{% endif %}>Supervisor</option>
+                            <option value="admin" {% if usuario.rol == 'admin' %}selected{% endif %}>Administrador</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label class="form-label d-block">Permisos</label>
+                        {% set permisos_activos = (usuario.permisos or '').split(',') if usuario.permisos else [] %}
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="permisos" value="polizas" id="perm_polizas"
+                                   {% if 'polizas' in permisos_activos %}checked{% endif %}>
+                            <label class="form-check-label" for="perm_polizas">Pólizas</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="permisos" value="finanzas" id="perm_finanzas"
+                                   {% if 'finanzas' in permisos_activos %}checked{% endif %}>
+                            <label class="form-check-label" for="perm_finanzas">Finanzas</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="permisos" value="usuarios" id="perm_usuarios"
+                                   {% if 'usuarios' in permisos_activos %}checked{% endif %}>
+                            <label class="form-check-label" for="perm_usuarios">Usuarios</label>
+                        </div>
+                    </div>
+
+                    <!-- Email, username y estado -->
+                    <div class="col-md-4">
+                        <label class="form-label">Email (login)</label>
+                        <input type="email" name="email" class="form-control" value="{{ usuario.email }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Usuario</label>
+                        <input type="text" name="username" class="form-control" value="{{ usuario.username or '' }}">
+                    </div>
+                    <div class="col-md-3 d-flex align-items-end">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="activo" id="activo"
+                                   {% if usuario.activo %}checked{% endif %}>
+                            <label class="form-check-label" for="activo">
+                                Usuario activo
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Cambio de contraseña -->
+                    <div class="col-md-4">
+                        <label class="form-label">Nueva contraseña (opcional)</label>
+                        <input type="password" name="password" class="form-control" placeholder="Dejar en blanco para no cambiar">
+                    </div>
+
+                    <!-- Documentos -->
+                    <div class="col-md-4 mt-3">
+                        <label class="form-label d-block">Archivo CUIT (PDF)</label>
+                        {% if usuario.archivo_cuit %}
+                            <p class="mb-1">
+                                Actual: <a href="{{ url_for('usuario_doc', id=usuario.id, tipo='cuit') }}" target="_blank">Ver CUIT</a>
+                            </p>
+                        {% endif %}
+                        <input type="file" name="archivo_cuit" class="form-control" accept=".pdf">
+                    </div>
+
+                    <div class="col-md-4 mt-3">
+                        <label class="form-label d-block">Archivo Matrícula (PDF)</label>
+                        {% if usuario.archivo_matricula %}
+                            <p class="mb-1">
+                                Actual: <a href="{{ url_for('usuario_doc', id=usuario.id, tipo='matricula') }}" target="_blank">Ver Matrícula</a>
+                            </p>
+                        {% endif %}
+                        <input type="file" name="archivo_matricula" class="form-control" accept=".pdf">
+                    </div>
+
+                    <div class="col-md-4 mt-3">
+                        <label class="form-label d-block">Archivo DNI (PDF)</label>
+                        {% if usuario.archivo_dni_doc %}
+                            <p class="mb-1">
+                                Actual: <a href="{{ url_for('usuario_doc', id=usuario.id, tipo='dni') }}" target="_blank">Ver DNI</a>
+                            </p>
+                        {% endif %}
+                        <input type="file" name="archivo_dni" class="form-control" accept=".pdf">
+                    </div>
+                </div>
+
+                <div class="mt-4 d-flex justify-content-between">
+                    <a href="{{ url_for('usuarios') }}" class="btn btn-secondary">Cancelar</a>
+                    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
