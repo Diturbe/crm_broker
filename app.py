@@ -333,9 +333,8 @@ def admin_required(f):
 
 @app.route("/")
 def index():
-    if "user_id" in session:
-        return redirect(url_for("dashboard"))
-    return render_template("index.html")
+    # Pantalla de bienvenida + login integrado
+    return render_template("login.html")
 
 
 # =========================
