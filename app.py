@@ -25,12 +25,22 @@ import pandas as pd
 # =========================
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///crm.db')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'clave_super_segura_2026')
+
+# =========================
+# CONFIGURACIÓN BASE DE DATOS (LOCAL / RAILWAY)
+# =========================
+raw_db_url = os.getenv("DATABASE_URL", "sqlite:///crm.db")
+
+# En Railway / Heroku muchas veces viene como "postgres://"
+# y SQLAlchemy espera "postgresql+psycopg2://"
+if raw_db_url.startswith("postgres://"):
+    raw_db_url = raw_db_url.replace("postgres://", "postgresql+psycopg2://", 1)
+
+app.config["SQLALCHEMY_DATABASE_URI"] = raw_db_url
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "clave_super_segura_2026")
 
 db = SQLAlchemy(app)
-
 # =========================
 # CONFIG SUBIDA DE ARCHIVOS
 # =========================
