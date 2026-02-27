@@ -2,148 +2,518 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>CRM Broker - Inicio</title>
+    <title>CRM-Broker 2.6 · Grupo Luma</title>
     <style>
         * {
             box-sizing: border-box;
         }
+
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #0c3c78, #0f6bb3);
-            color: #ffffff;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+            background: radial-gradient(circle at top left, #0f6bb3 0, #0c3c78 45%, #020817 100%);
+            color: #f9fafb;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        .container {
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 18px;
-            padding: 40px 50px;
-            max-width: 900px;
-            width: 95%;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(6px);
+
+        .page {
+            width: 100%;
+            max-width: 1100px;
+            min-height: 520px;
+            background: rgba(5, 12, 30, 0.92);
+            border-radius: 22px;
+            box-shadow:
+                0 20px 40px rgba(0,0,0,0.4),
+                0 0 0 1px rgba(148, 163, 184, 0.12);
+            display: grid;
+            grid-template-columns: minmax(0, 3fr) minmax(0, 2.5fr);
+            overflow: hidden;
+            animation: floatIn 0.6s ease-out;
         }
-        h1 {
-            margin-top: 0;
-            font-size: 32px;
-            letter-spacing: 1px;
+
+        @keyframes floatIn {
+            from {
+                opacity: 0;
+                transform: translateY(18px) scale(0.98);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
-        h2 {
-            margin-top: 5px;
-            font-weight: normal;
-            color: #e0e7ff;
+
+        /* LADO IZQUIERDO – BRANDING */
+        .left {
+            padding: 32px 36px;
+            position: relative;
+            overflow: hidden;
         }
-        .grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            margin-top: 30px;
-        }
-        .feature {
-            flex: 1;
-            min-width: 220px;
-            background: rgba(0, 0, 0, 0.15);
-            border-radius: 14px;
-            padding: 15px 18px;
-        }
-        .feature h3 {
-            margin-top: 0;
-            font-size: 16px;
-        }
-        .feature p {
-            font-size: 13px;
-            line-height: 1.4;
-            color: #dbe4ff;
-        }
-        .buttons {
-            margin-top: 30px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-        a.btn {
-            text-decoration: none;
-            padding: 12px 22px;
-            border-radius: 999px;
-            font-weight: bold;
-            font-size: 14px;
-            border: 1px solid #ffffff;
-            transition: all 0.2s ease;
-            display: inline-block;
-        }
-        a.btn-primary {
-            background: #ffffff;
-            color: #0c3c78;
-            border-color: #ffffff;
-        }
-        a.btn-primary:hover {
-            background: #e6f0ff;
-        }
-        a.btn-outline {
-            background: transparent;
-            color: #ffffff;
-        }
-        a.btn-outline:hover {
-            background: rgba(255, 255, 255, 0.15);
-        }
-        .badge {
-            display: inline-block;
-            border-radius: 999px;
-            padding: 4px 10px;
-            font-size: 11px;
-            background: rgba(0, 0, 0, 0.25);
-            margin-bottom: 10px;
-        }
-        .footer {
-            margin-top: 25px;
-            font-size: 11px;
-            color: #cdd4ff;
+
+        .left::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top left, rgba(56,189,248,0.25), transparent 55%),
+                        radial-gradient(circle at bottom, rgba(45,212,191,0.18), transparent 60%);
             opacity: 0.8;
+            pointer-events: none;
         }
-        @media (max-width: 600px) {
-            .container {
-                padding: 25px 20px;
+
+        .left-inner {
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+
+        .logo {
+            width: 70px;
+            height: 70px;
+            border-radius: 18px;
+            background: radial-gradient(circle at 30% 0, #38bdf8, #0f766e 60%, #020617 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .logo img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .brand-text-main {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .brand-badge {
+            font-size: 11px;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: #9ca3af;
+        }
+
+        .brand-name {
+            font-size: 21px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+        }
+
+        .brand-name span {
+            color: #38bdf8;
+        }
+
+        .version-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(148, 163, 184, 0.45);
+            font-size: 11px;
+            color: #e5e7eb;
+            margin-bottom: 18px;
+        }
+
+        .version-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background: #22c55e;
+            box-shadow: 0 0 10px rgba(34,197,94,0.9);
+        }
+
+        h1 {
+            margin: 0 0 8px 0;
+            font-size: 28px;
+            letter-spacing: 0.02em;
+        }
+
+        h1 span {
+            color: #38bdf8;
+        }
+
+        .subtitle {
+            margin: 0 0 24px 0;
+            font-size: 15px;
+            color: #cbd5f5;
+            max-width: 460px;
+        }
+
+        .tagline {
+            font-size: 13px;
+            color: #9ca3af;
+            margin-bottom: 18px;
+        }
+
+        .stats-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px;
+            margin-bottom: 22px;
+        }
+
+        .stat-card {
+            padding: 10px 12px;
+            border-radius: 14px;
+            border: 1px solid rgba(148, 163, 184, 0.45);
+            background: radial-gradient(circle at top left, rgba(56,189,248,0.13), rgba(15,23,42,0.96));
+            font-size: 11px;
+            min-width: 140px;
+        }
+
+        .stat-label {
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            color: #94a3b8;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .bullets {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            gap: 6px;
+            font-size: 13px;
+            color: #e5e7eb;
+        }
+
+        .bullets li::before {
+            content: "•";
+            margin-right: 6px;
+            color: #38bdf8;
+        }
+
+        /* LADO DERECHO – LOGIN */
+        .right {
+            background: radial-gradient(circle at top right, rgba(56,189,248,0.23), rgba(15,23,42,0.98));
+            border-left: 1px solid rgba(148, 163, 184, 0.25);
+            padding: 32px 34px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .login-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .login-subtitle {
+            font-size: 13px;
+            color: #cbd5f5;
+            margin-bottom: 16px;
+        }
+
+        /* CAJA DE ERROR */
+        .error-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 11px;
+            border-radius: 12px;
+            border: 1px solid rgba(248,113,113,0.7);
+            background: radial-gradient(circle at top left, rgba(248,113,113,0.25), rgba(15,23,42,0.96));
+            font-size: 12px;
+            color: #fee2e2;
+            margin-bottom: 18px;
+        }
+
+        .error-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 999px;
+            background: #f97373;
+            box-shadow: 0 0 8px rgba(248,113,113,0.8);
+        }
+
+        .error-animate {
+            animation: shake 0.35s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-5px); }
+            40% { transform: translateX(5px); }
+            60% { transform: translateX(-4px); }
+            80% { transform: translateX(3px); }
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        label {
+            font-size: 13px;
+            color: #e5e7eb;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 9px 11px;
+            border-radius: 10px;
+            border: 1px solid rgba(148, 163, 184, 0.45);
+            background: rgba(15,23,42,0.9);
+            color: #f9fafb;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.18s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 1px rgba(56,189,248,0.3);
+            background: rgba(15,23,42,0.96);
+        }
+
+        .btn-primary {
+            margin-top: 6px;
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 999px;
+            border: none;
+            cursor: pointer;
+            background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+            color: #0b1020;
+            font-weight: 600;
+            font-size: 14px;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease, opacity 0.12s ease;
+            box-shadow: 0 12px 25px rgba(56,189,248,0.3);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary:hover {
+            filter: brightness(1.05);
+            transform: translateY(-1px);
+            box-shadow: 0 16px 36px rgba(56,189,248,0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+            box-shadow: 0 8px 18px rgba(56,189,248,0.25);
+        }
+
+        .btn-primary.loading {
+            opacity: 0.9;
+            cursor: default;
+        }
+
+        .btn-spinner {
+            display: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 999px;
+            border: 2px solid rgba(15,23,42,0.2);
+            border-top-color: #0b1020;
+            animation: spin 0.7s linear infinite;
+        }
+
+        .btn-primary.loading .btn-spinner {
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .login-footer {
+            margin-top: 18px;
+            font-size: 11px;
+            color: #9ca3af;
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .login-footer span {
+            opacity: 0.9;
+        }
+
+        .env-tag {
+            padding: 4px 9px;
+            border-radius: 999px;
+            border: 1px solid rgba(148,163,184,0.4);
+            background: rgba(15,23,42,0.9);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .page {
+                max-width: 96%;
+                grid-template-columns: 1fr;
+            }
+            .right {
+                border-left: none;
+                border-top: 1px solid rgba(148, 163, 184, 0.25);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .left {
+                padding: 22px 20px;
+            }
+            .right {
+                padding: 22px 20px 26px;
             }
             h1 {
-                font-size: 24px;
+                font-size: 23px;
+            }
+            .subtitle {
+                font-size: 14px;
             }
         }
     </style>
 </head>
 <body>
+<div class="page">
+    <!-- PANEL IZQUIERDO -->
+    <div class="left">
+        <div class="left-inner">
+            <div class="logo-row">
+                <div class="logo">
+                    <!-- Logo Grupo Luma -->
+                    <img src="{{ url_for('static', filename='logo_luma.png') }}" alt="Grupo Luma">
+                </div>
+                <div class="brand-text-main">
+                    <div class="brand-badge">CRM-BROKER 2.6</div>
+                    <div class="brand-name">Grupo <span>Luma</span></div>
+                    <div style="font-size:12px;color:#9ca3af;">Asesores en Seguros</div>
+                </div>
+            </div>
 
-<div class="container">
-    <span class="badge">Panel interno · CRM para Broker de Seguros</span>
-    <h1>CRM Broker</h1>
-    <h2>Organizá pólizas, comisiones y finanzas en un solo lugar.</h2>
+            <div class="version-pill">
+                <div class="version-dot"></div>
+                <span>Plataforma activa · Uso interno</span>
+            </div>
 
-    <div class="grid">
-        <div class="feature">
-            <h3>📊 Vista general en segundos</h3>
-            <p>Dashboard con pólizas vigentes, por vencer y vencidas, más el resumen de comisiones y saldos.</p>
-        </div>
-        <div class="feature">
-            <h3>📅 Gestión de pólizas</h3>
-            <p>Control de pólizas por compañía y cliente, con cálculo automático de comisiones y aviso por WhatsApp.</p>
-        </div>
-        <div class="feature">
-            <h3>💰 Módulo financiero</h3>
-            <p>Registrá ingresos y egresos, analizá la rentabilidad del broker y generá reportes mensuales en PDF.</p>
+            <h1>Gestión integral de <span>pólizas, clientes</span> y siniestros.</h1>
+            <p class="subtitle">
+                CRM-Broker 2.6 centraliza la operación diaria del estudio:
+                altas de pólizas, renovaciones, seguimiento de siniestros,
+                estadísticas y administración en un único entorno.
+            </p>
+
+            <p class="tagline">
+                Diseñado para brokers de seguros que necesitan control,
+                trazabilidad y una imagen profesional alineada con Grupo Luma.
+            </p>
+
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-label">Módulos</div>
+                    <div class="stat-value">Pólizas · Clientes · Siniestros · Finanzas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Seguridad</div>
+                    <div class="stat-value">Acceso privado · Usuarios internos</div>
+                </div>
+            </div>
+
+            <ul class="bullets">
+                <li>Seguimiento de cartera y vencimientos en tiempo real.</li>
+                <li>Historial unificado por cliente y por compañía de seguros.</li>
+                <li>Base sólida para reportes y decisiones comerciales.</li>
+            </ul>
         </div>
     </div>
 
-    <div class="buttons">
-        <a href="{{ url_for('login') }}" class="btn btn-primary">Ingresar al CRM</a>
-        <a href="{{ url_for('login') }}" class="btn btn-outline">Sólo necesito el login</a>
-    </div>
+    <!-- PANEL DERECHO – LOGIN -->
+    <div class="right">
+        <div>
+            <div class="login-title">Ingresar al CRM-Broker 2.6</div>
+            <div class="login-subtitle">
+                Usa tu usuario interno para acceder al panel de gestión de Grupo Luma Asesores en Seguros.
+            </div>
 
-    <div class="footer">
-        CRM Broker · Uso interno
+            {% if error %}
+            <div class="error-box error-animate">
+                <div class="error-dot"></div>
+                <div class="error-text">
+                    {{ error }}
+                </div>
+            </div>
+            {% endif %}
+
+            <form action="{{ url_for('login') }}" method="post" id="loginForm">
+                <div>
+                    <label for="username">Usuario</label>
+                    <input type="text" id="username" name="username" required autocomplete="username">
+                </div>
+                <div>
+                    <label for="password">Contraseña</label>
+                    <input type="password" id="password" name="password" required autocomplete="current-password">
+                </div>
+                <button type="submit" class="btn-primary" id="loginButton">
+                    <span class="btn-label">Ingresar</span>
+                    <span class="btn-spinner" aria-hidden="true"></span>
+                </button>
+            </form>
+
+            <div class="login-footer">
+                <span>© {{ current_year if current_year is defined else "2026" }} · CRM-Broker 2.6 · Grupo Luma Asesores en Seguros</span>
+                <span class="env-tag">Ambiente interno</span>
+            </div>
+        </div>
     </div>
 </div>
 
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    var form = document.getElementById("loginForm");
+    var button = document.getElementById("loginButton");
+    var label = button ? button.querySelector(".btn-label") : null;
+
+    if (form && button && label) {
+        form.addEventListener("submit", function () {
+            button.disabled = true;
+            button.classList.add("loading");
+            label.textContent = "Verificando...";
+        });
+    }
+
+    // Si hay error, volvemos a enfocar el usuario
+    {% if error %}
+    var userInput = document.getElementById("username");
+    if (userInput) {
+        userInput.focus();
+        userInput.select();
+    }
+    {% endif %}
+});
+</script>
 </body>
 </html>

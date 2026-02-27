@@ -1,193 +1,131 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Siniestros · CRM Broker</title>
-    <style>
-        * { box-sizing: border-box; }
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f4f6f9;
-            color: #212529;
-        }
+{% extends "base.html" %}
 
-        /* SIDEBAR */
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 230px;
-            height: 100vh;
-            background: #0c3c78;
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.25);
-        }
-        .sidebar h2 {
-            margin: 0 0 20px 0;
-            font-size: 22px;
-        }
-        .sidebar nav a {
-            display: block;
-            padding: 10px 12px;
-            margin-bottom: 6px;
-            border-radius: 6px;
-            text-decoration: none;
-            color: #fff;
-            font-size: 14px;
-        }
-        .sidebar nav a:hover {
-            background: rgba(255,255,255,0.18);
-        }
-        .sidebar nav a.active {
-            background: rgba(255,255,255,0.30);
-            font-weight: bold;
-        }
-        .sidebar nav a.logout {
-            margin-top: 15px;
-            background: rgba(255, 0, 0, 0.35);
-        }
+{% block title %}Siniestros · CRM Broker{% endblock %}
 
-        /* CONTENIDO PRINCIPAL */
-        .container {
-            margin-left: 260px;
-            padding: 25px 30px 40px 30px;
-            max-width: 1200px;
-        }
+{% block base_extra_css %}
+    .siniestros-layout {
+        display:flex;
+        gap:20px;
+        flex-wrap:wrap;
+    }
 
-        h1 {
-            margin-top: 0;
-            color: #0c3c78;
-        }
-        .subtitle {
-            margin-top: 0;
-            margin-bottom: 20px;
-            color: #6c757d;
-            font-size: 13px;
-        }
+    .card {
+        background:white;
+        border-radius:10px;
+        padding:18px;
+        box-shadow:0 2px 6px rgba(0,0,0,0.07);
+        margin-bottom:20px;
+    }
 
-        .card {
-            background: #ffffff;
-            border-radius: 10px;
-            padding: 18px 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-            margin-bottom: 25px;
-        }
+    .card h3 {
+        margin-top:0;
+        margin-bottom:10px;
+        font-size:16px;
+        color:#05386B;
+    }
 
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 15px 20px;
-        }
-        .form-grid div {
-            display: flex;
-            flex-direction: column;
-        }
-        label {
-            font-size: 13px;
-            margin-bottom: 4px;
-        }
-        input, select, textarea {
-            padding: 7px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-            font-size: 13px;
-        }
-        textarea {
-            resize: vertical;
-            min-height: 60px;
-        }
+    .form-grid {
+        display:grid;
+        grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+        gap:10px 18px;
+    }
 
-        .btn {
-            padding: 8px 14px;
-            border: none;
-            border-radius: 4px;
-            font-size: 13px;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-        }
-        .btn-primary { background: #0c3c78; color: #fff; }
-        .btn-xs { padding: 4px 6px; font-size: 11px; }
-        .btn-light { background: #e9ecef; }
+    label {
+        font-size:12px;
+        margin-bottom:3px;
+        display:block;
+        color:#495057;
+    }
+    input, select, textarea {
+        width:100%;
+        padding:6px 8px;
+        border-radius:4px;
+        border:1px solid #ced4da;
+        font-size:13px;
+        resize:vertical;
+    }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-        }
-        thead {
-            background: #0c3c78;
-            color: #fff;
-        }
-        th, td {
-            padding: 8px;
-            border-bottom: 1px solid #eee;
-            text-align: left;
-        }
-        tr:nth-child(even) {
-            background: #f9f9f9;
-        }
+    .btn {
+        padding:7px 14px;
+        border-radius:4px;
+        border:none;
+        font-size:13px;
+        cursor:pointer;
+    }
+    .btn-primary { background:#05386B; color:#fff; }
+    .btn-secondary { background:#6c757d; color:#fff; }
+    .btn-xs { padding:4px 8px; font-size:11px; }
 
-        .badge {
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: bold;
-        }
-        .badge.denunciado { background: #d1ecf1; color: #0c5460; }
-        .badge.gestion { background: #fff3cd; color: #856404; }
-        .badge.pagado { background: #d4edda; color: #155724; }
-        .badge.rechazado { background: #f8d7da; color: #721c24; }
+    table {
+        width:100%;
+        border-collapse:collapse;
+        font-size:12px;
+    }
+    thead {
+        background:#05386B;
+        color:white;
+    }
+    th, td {
+        padding:8px;
+        border-bottom:1px solid #eee;
+        text-align:left;
+    }
+    tr:nth-child(even) { background:#f9f9f9; }
 
-        .acciones form {
-            display: inline;
-        }
-    </style>
-</head>
-<body>
+    .badge {
+        display:inline-block;
+        padding:3px 8px;
+        border-radius:999px;
+        font-size:11px;
+        font-weight:bold;
+    }
+    .badge.denunciado { background:#fff3cd; color:#856404; }
+    .badge.gestion    { background:#cce5ff; color:#004085; }
+    .badge.pagado     { background:#d4edda; color:#155724; }
+    .badge.rechazado  { background:#f8d7da; color:#721c24; }
+{% endblock %}
 
-<div class="sidebar">
-    <h2>CRM Broker</h2>
-    <nav>
-        <a href="{{ url_for('dashboard') }}">📊 Dashboard</a>
-        <a href="{{ url_for('ver_polizas') }}">📄 Pólizas</a>
-        <a href="{{ url_for('finanzas') }}">💰 Finanzas</a>
-        <a href="{{ url_for('usuarios') }}">👥 Usuarios</a>
-        <a href="{{ url_for('reporte_form') }}">📑 Reportes</a>
-        <a href="{{ url_for('siniestros') }}" class="active">🚨 Siniestros</a>
-        <a href="{{ url_for('logout') }}" class="logout">⛔ Cerrar sesión</a>
-    </nav>
-</div>
+{% block content %}
 
-<div class="container">
-    <h1>Siniestros</h1>
-    <p class="subtitle">Registro y seguimiento de siniestros denunciados por asegurados.</p>
+<h1>Siniestros</h1>
+<p class="subtitle">Registro básico de siniestros y seguimiento de estado.</p>
 
-    <!-- FORMULARIO NUEVO SINIESTRO -->
-    <div class="card">
+<div class="siniestros-layout">
+
+    <div class="card" style="flex:1; min-width:280px;">
         <h3>Nuevo siniestro</h3>
-        <form action="{{ url_for('crear_siniestro') }}" method="post">
+        <form method="post" action="{{ url_for('crear_siniestro') }}">
             <div class="form-grid">
+                <div>
+                    <label>Fecha del siniestro</label>
+                    <input type="date" name="fecha_siniestro">
+                </div>
+                <div>
+                    <label>Tipo</label>
+                    <input type="text" name="tipo" placeholder="Choque, robo, etc.">
+                </div>
+                <div>
+                    <label>Estado</label>
+                    <select name="estado">
+                        <option value="DENUNCIADO">Denunciado</option>
+                        <option value="EN GESTIÓN">En gestión</option>
+                        <option value="PAGADO">Pagado</option>
+                        <option value="RECHAZADO">Rechazado</option>
+                    </select>
+                </div>
 
                 <div>
                     <label>Asegurado</label>
-                    <input type="text" name="asegurado" required>
+                    <input type="text" name="asegurado">
                 </div>
-
                 <div>
                     <label>DNI</label>
                     <input type="text" name="dni">
                 </div>
-
                 <div>
                     <label>Teléfono</label>
                     <input type="text" name="telefono">
                 </div>
-
                 <div>
                     <label>Email</label>
                     <input type="email" name="email">
@@ -197,82 +135,50 @@
                     <label>Compañía</label>
                     <input type="text" name="compania">
                 </div>
-
                 <div>
-                    <label>Número de póliza</label>
+                    <label>N° póliza</label>
                     <input type="text" name="numero_poliza">
                 </div>
 
-                <div>
-                    <label>Fecha del siniestro</label>
-                    <input type="date" name="fecha_siniestro">
+                <div style="grid-column:1 / -1;">
+                    <label>Descripción</label>
+                    <textarea name="descripcion" rows="3"></textarea>
                 </div>
-
-                <div>
-                    <label>Tipo de siniestro</label>
-                    <select name="tipo">
-                        <option value="Choque">Choque</option>
-                        <option value="Robo total">Robo total</option>
-                        <option value="Robo parcial">Robo parcial</option>
-                        <option value="Cristales">Cristales</option>
-                        <option value="Granizo">Granizo</option>
-                        <option value="Responsabilidad civil">Responsabilidad civil</option>
-                        <option value="Otro">Otro</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label>Estado inicial</label>
-                    <select name="estado">
-                        <option value="DENUNCIADO">DENUNCIADO</option>
-                        <option value="EN GESTIÓN">EN GESTIÓN</option>
-                        <option value="PAGADO">PAGADO</option>
-                        <option value="RECHAZADO">RECHAZADO</option>
-                    </select>
-                </div>
-
-                <div style="grid-column: 1 / -1;">
-                    <label>Descripción breve</label>
-                    <textarea name="descripcion" placeholder="Relato del asegurado, daños, lugar del hecho, etc."></textarea>
-                </div>
-
             </div>
 
             <br>
-            <button class="btn btn-primary">Guardar siniestro</button>
+            <button type="submit" class="btn btn-primary">Guardar siniestro</button>
         </form>
     </div>
 
-    <!-- LISTADO DE SINIESTROS -->
-    <div class="card">
+    <div class="card" style="flex:2; min-width:380px;">
         <h3>Listado de siniestros</h3>
-
         <table>
             <thead>
                 <tr>
-                    <th>Fecha</th>
+                    <th>ID</th>
+                    <th>Fecha sins.</th>
+                    <th>Fecha den.</th>
+                    <th>Tipo</th>
                     <th>Asegurado</th>
                     <th>Compañía</th>
-                    <th>Póliza</th>
-                    <th>Tipo</th>
+                    <th>N° póliza</th>
                     <th>Estado</th>
-                    <th>Acciones</th>
+                    <th>Cambiar estado</th>
                 </tr>
             </thead>
             <tbody>
-                {% for s in siniestros %}
+            {% for s in siniestros %}
+                {% set est = s.estado or '' %}
                 <tr>
-                    <td>
-                        {% if s.fecha_siniestro %}
-                            {{ s.fecha_siniestro.strftime('%d/%m/%Y') }}
-                        {% endif %}
-                    </td>
+                    <td>{{ s.id }}</td>
+                    <td>{{ s.fecha_siniestro.strftime('%d/%m/%Y') }}</td>
+                    <td>{{ s.fecha_denuncia.strftime('%d/%m/%Y') }}</td>
+                    <td>{{ s.tipo }}</td>
                     <td>{{ s.asegurado }}</td>
                     <td>{{ s.compania }}</td>
                     <td>{{ s.numero_poliza }}</td>
-                    <td>{{ s.tipo }}</td>
                     <td>
-                        {% set est = s.estado.upper() %}
                         {% if est == 'DENUNCIADO' %}
                             <span class="badge denunciado">Denunciado</span>
                         {% elif est == 'EN GESTIÓN' %}
@@ -285,7 +191,7 @@
                             <span class="badge">{{ s.estado }}</span>
                         {% endif %}
                     </td>
-                    <td class="acciones">
+                    <td>
                         <form method="post" action="{{ url_for('cambiar_estado_siniestro', id=s.id) }}">
                             <select name="estado">
                                 <option value="DENUNCIADO" {% if s.estado == 'DENUNCIADO' %}selected{% endif %}>Denunciado</option>
@@ -293,17 +199,15 @@
                                 <option value="PAGADO" {% if s.estado == 'PAGADO' %}selected{% endif %}>Pagado</option>
                                 <option value="RECHAZADO" {% if s.estado == 'RECHAZADO' %}selected{% endif %}>Rechazado</option>
                             </select>
-                            <button class="btn btn-xs btn-light">Actualizar</button>
+                            <button class="btn btn-xs btn-secondary">Actualizar</button>
                         </form>
                     </td>
                 </tr>
-                {% endfor %}
+            {% endfor %}
             </tbody>
         </table>
-
     </div>
 
 </div>
 
-</body>
-</html>
+{% endblock %}

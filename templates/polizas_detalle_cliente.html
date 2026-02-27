@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+
+{% block title %}Detalle de pólizas{% endblock %}
+
+{% block base_extra_css %}
+    .card {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        margin-bottom: 20px;
+    }
+    .card h3 {
+        margin-top: 0;
+        margin-bottom: 15px;
+        font-size: 16px;
+        color: #05386B;
+    }
+    .table-card {
+        margin-top: 10px;
+        overflow-x: auto;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12px;
+    }
+    thead {
+        background: #05386B;
+        color: #fff;
+    }
+    th, td {
+        padding: 8px;
+        border-bottom: 1px solid #eee;
+        text-align: left;
+    }
+    tr:nth-child(even) {
+        background: #f9f9f9;
+    }
+    .badge {
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: bold;
+    }
+    .badge-vigente {
+        background: #d4edda;
+        color: #155724;
+    }
+    .badge-porvencer {
+        background: #fff3cd;
+        color: #856404;
+    }
+    .badge-vencida {
+        background: #f8d7da;
+        color: #721c24;
+    }
+    .thumb-foto {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 4px;
+        margin-right: 4px;
+        border: 1px solid #ddd;
+    }
+    .btn-volver {
+        display: inline-block;
+        padding: 7px 14px;
+        border-radius: 4px;
+        border: none;
+        font-size: 13px;
+        cursor: pointer;
+        background: #6c757d;
+        color: #fff;
+        text-decoration: none;
+        margin-top: 10px;
+    }
+{% endblock %}
+
+{% block content %}
+
+    <h1>Detalle del cliente</h1>
+    <p class="subtitle">
+        Cliente: <strong>{{ cliente.cliente }}</strong>
+        {% if cliente.dni %} - DNI: {{ cliente.dni }}{% endif %}
+    </p>
+
+    <div class="card">
+        <h3>Datos principales</h3>
+        <p><strong>Nombre completo:</strong> {{ cliente.cliente }}</p>
+        <p>
+            <strong>DNI:</strong> {{ cliente.dni or '-' }}<br>
+            <strong>Domicilio:</strong> {{ cliente.domicilio or '-' }}<br>
+            <strong>Localidad:</strong> {{ cliente.localidad or '-' }} - {{ cliente.provincia or '-' }}
+        </p>
+        <p>
+            <strong>Productor interno:</strong> {{ cliente.productor_interno or '-' }}<br>
+            <strong>Teléfono:</strong> {{ cliente.telefono or '-' }}<br>
+            <strong>Email:</strong> {{ cliente.email or '-' }}
+        </p>
+    </div>
+
+    <div class="card table-card">
+        <h3>Pólizas del cliente</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Compañía</th>
+                    <th>Tipo seguro</th>
+                    <th>Número póliza</th>
+                    <th>Vencimiento</th>
+                    <th>Estado</th>
+                    <th>Situación</th>
+                    <th>Renovación</th>
+                    <th>Prima</th>
+                    <th>% Com.</th>
+                    <th>Comisión</th>
+                    <th>Fotos previas</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for p in polizas %}
+                <tr>
+                    <td>{{ p.compania }}</td>
+                    <td>{{ p.tipo_seguro or '-' }}</td>
+                    <td>{{ p.numero_poliza }}</td>
+                    <td>
+                        {% if p.fecha_vencimiento %}
+                            {{ p.fecha_vencimiento.strftime('%d/%m/%Y') }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if p.estado is defined %}
+                            {{ p.estado }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td>{{ p.situacion or 'ACTIVA' }}</td>
+                    <td>{{ p.estado_renovacion or 'PENDIENTE' }}</td>
+                    <td>$ {{ '%.2f'|format(p.prima or 0) }}</td>
+                    <td>{{ p.porcentaje_comision or 0 }} %</td>
+                    <td>
+                        $ {{ '%.2f'|format(p.calcular_comision()) }}
+                    </td>
+                    <td>
+                        {% if p.fotos %}
+                            {% for foto in p.fotos %}
+                                <a href="{{ url_for('poliza_foto', id=foto.id) }}" target="_blank">
+                                    <img src="{{ url_for('poliza_foto', id=foto.id) }}"
+                                         alt="Foto póliza"
+                                         class="thumb-foto">
+                                </a>
+                            {% endfor %}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="11">No se encontraron pólizas para este cliente.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <a href="{{ url_for('ver_polizas') }}" class="btn-volver">Volver al listado</a>
+
+{% endblock %}

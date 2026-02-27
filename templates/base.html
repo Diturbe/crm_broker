@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}CRM Broker{% endblock %}</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            color: #212529;
+        }
+
+        .app {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* TOPBAR HORIZONTAL */
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 12px 24px;
+            background: #05386B;
+            color: #fff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-mark {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: #ffffff22;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .topbar-title {
+            font-size: 20px;
+            font-weight: bold;
+            line-height: 1.1;
+        }
+
+        .topbar-subtitle {
+            font-size: 11px;
+            opacity: 0.8;
+        }
+
+        .topbar-nav {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .topbar-link {
+            padding: 8px 14px;
+            border-radius: 999px;
+            font-size: 14px;
+            text-decoration: none;
+            color: #f8f9fa;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.15s, transform 0.1s;
+            white-space: nowrap;
+        }
+
+        .topbar-link span.icon {
+            font-size: 16px;
+        }
+
+        .topbar-link:hover {
+            background: #ffffff22;
+            transform: translateY(-1px);
+        }
+
+        .topbar-link.active {
+            background: #ffffff33;
+            font-weight: 600;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logout-btn {
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: #8b2a3a;
+            color: #fff;
+            text-decoration: none;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .logout-btn:hover {
+            background: #a33145;
+        }
+
+        .user-pill {
+            font-size: 11px;
+            opacity: 0.9;
+        }
+
+        .content {
+            flex: 1;
+            padding: 24px;
+            max-width: 1300px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        h1 {
+            margin-top: 0;
+            margin-bottom: 5px;
+            color: #05386B;
+        }
+
+        .subtitle {
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #6c757d;
+            font-size: 13px;
+        }
+
+        /* CSS extra de cada página */
+        {% block base_extra_css %}{% endblock %}
+    </style>
+
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+<div class="app">
+    <header class="topbar">
+        <div class="topbar-left">
+            <div class="logo-mark">L</div>
+            <div>
+                <div class="topbar-title">CRM Broker</div>
+                <div class="topbar-subtitle">Grupo Luma Asesores en Seguros</div>
+            </div>
+        </div>
+
+        <nav class="topbar-nav">
+            <a href="{{ url_for('dashboard') }}"
+               class="topbar-link {% if request.endpoint == 'dashboard' %}active{% endif %}">
+                <span class="icon">📊</span> <span>Dashboard</span>
+            </a>
+            <a href="{{ url_for('ver_polizas') }}"
+               class="topbar-link {% if request.endpoint in ['ver_polizas', 'agregar_poliza'] %}active{% endif %}">
+                <span class="icon">📄</span> <span>Pólizas</span>
+            </a>
+            <a href="{{ url_for('finanzas') }}"
+               class="topbar-link {% if request.endpoint in ['finanzas','finanzas_agregar'] %}active{% endif %}">
+                <span class="icon">💰</span> <span>Finanzas</span>
+            </a>
+            <a href="{{ url_for('usuarios') }}"
+               class="topbar-link {% if request.endpoint in ['usuarios','crear_usuario','usuarios_reenviar_mail','usuarios_reset_password','usuarios_bloquear','usuario_editar'] %}active{% endif %}">
+                <span class="icon">👥</span> <span>Usuarios</span>
+            </a>
+            <a href="{{ url_for('reporte_form') }}"
+               class="topbar-link {% if request.endpoint in ['reporte_form','reporte_mensual'] %}active{% endif %}">
+                <span class="icon">📑</span> <span>Reportes</span>
+            </a>
+            <a href="{{ url_for('siniestros') }}"
+               class="topbar-link {% if request.endpoint in ['siniestros','crear_siniestro','cambiar_estado_siniestro'] %}active{% endif %}">
+                <span class="icon">🚨</span> <span>Siniestros</span>
+            </a>
+        </nav>
+
+        <div class="topbar-right">
+            {% if session.get('user_id') %}
+                <div class="user-pill">
+                    Sesión activa
+                </div>
+            {% endif %}
+            <a href="{{ url_for('logout') }}" class="logout-btn">
+                ⛔ <span>Cerrar sesión</span>
+            </a>
+        </div>
+    </header>
+
+    <main class="content">
+        {% block content %}{% endblock %}
+    </main>
+</div>
+</body>
+</html>
